@@ -1,0 +1,12 @@
+# Subnetting-->It means Network within a network 
+		or
+		logically division of Ip address
+
+	IPv4 ---> Limited
+Q. what happens if we did  not used subnet?
+ans:  let one router connect with multiple computers our router extra ip gets wasted thats we have to use subnetting 
+
+by default CIDR range --/s8 bit for class A   ,--/16 bit for class B , --/24 bit for class C
+
+Q. how subnetting create?
+ans: suppose we have 1 netrowk se multiple network bnaate hai router me sbse big value to consider krnege

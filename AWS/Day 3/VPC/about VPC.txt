@@ -1,0 +1,63 @@
+VPC is just like an virtual router
+With Amazon Virtual Private Cloud (Amazon VPC), 
+
+you can launch AWS resources in a logically isolated virtual network that you've defined. 
+
+This virtual network closely resembles a traditional network that you'd operate in your own data center, with the benefits of using the scalable infrastructure of AWS.
+
+A Vixtual Yrivate Cloud is a Virtual Network
+that Closely Resembles a traditional Networking
+that you Operate in your Own data Centre, with
+the Benefits of Using the Scalable Tnfra-
+-Structure of AWS.
+
+OR
+
+VPC us a Virtual Network or Data Centre
+inside AWS for One Client
+
+It is logically Tsolated from Other Virtual
+N/w in the AWS Cloud
+> Max 5 VPC Can be Created and 200
+Subnet in 1 VPC.
+
+it can allocate max. 5 Elastic IP.
+once We Created VPC, DHCP, NACL and
+Security Group will be automaticalty
+Created
+
+A VPC is Confined to an AWs Region
+and does not extend Between Regions.
+
+# Types of VPC
+   1. Default VPC -->   * Created in each AWS region when an AWS account is created 
+			* Has a internet gatway by default
+   
+   2. Custom VPC---> creating the custom CIDR
+
+
+Steps to Create a VPC
+	1. create VPC	
+	2. subnet
+	3. Internet Gateway
+	4. Route table
+
+2. subnet 
+*  If we have to check the subnet is public  then we have to check routing table 0.0.0/16
+
+
+3. Internert gateway--->
+* we can associate multiple  subnet in one route table
+* but one subnet can associate with only one route at a time
+
+NAT gatway (Network address translation)
+* It transferred public Ip to private and private to public
+* it attached inside vpc public subnet with this 
+* it is works kind of midiator
+* If we enable NAT 
+* VPC par NACL lga hoga
+
+
+
+
+

@@ -1,0 +1,14 @@
+Azure uses for create Virtualizations with his own product called (hyper- V)
+
+VM follows 2 tiers
+Basic tier--> (development and test work loads)
+Standerd tier--> (like productions loads)
+
+Types of VM or family
+* General purpose--> (vm-for basic purpose used)-- it is for 'A' series
+* GPU--> it focus for grapic like for gaming VM
+* General purpose-->
+* memory optimized-->
+* compute optimized-->
+* storage optimized--> 
+
