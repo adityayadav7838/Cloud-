@@ -1,0 +1,63 @@
+Step 1:   create VPC 
+          inside vpc create 2 subnet 
+                  * public subnet   
+              
+                  * private subnet (change the cidr )  -->
+
+step 2: create internet gatway for both 
+        igw-vpc1---->attacth with public subnet
+        igw-vpc2---->attach with private subnet
+
+step 3: create 2 route table
+        public-route----->edit and connect public subnet--------->edit routes and provide igw  through this it go to the internet
+        private-route---->edit and connect private subnet-------->
+
+
+step 4: create 2 New instance with using Custom VPC attach which I have created
+        Note:  
+              for attach private subnet EC2 do ---Disable--- Auto assign public IP (becasue ye internet pe nhi jaa skta)
+              for attach public subnet EC2 do ---Enable--- Auto assign public IP
+
+        Configure security group --> if windows instance use rdp, https, http --> source anywhere   for  inbound
+        create a new key pay and downlaod 
+        (we can use existing if one is created)
+
+Step 5: Connect both
+      
+        note : if I choose private instance for connect , if I downloaded the RDP of this I cannot accessed because I don't have its public IP
+
+        select public instance 
+            --> connect dowload rdp
+            --> select get password 
+            -->choose key which i have downloaded and decrypt the key 
+              open the rdp paste password
+
+Now what  I have to do from public subnet instance I have to acces the private subnet instance
+
+step 6: inside public instance 
+        open rdp 
+        give priavte ip
+        and password will be same for both
+        then inside public insatnce I have accessed private  without using internet
+        
+      inside privte instance rdp open cmd
+                    chcek is it accssed the internet of not
+                    give command ------ ping 8.8.8.8 -t
+                        if it gives output request time out then it means it cannot access the internet
+
+      
+what we have to do so it can access the internet
+step 1: go to the services--> go to the VPC
+
+step 2 : Click NAT gatway
+        craete NAT gatway
+        subnet of NAT gatway choose public (becoz NAT gatway always use with public subnet )
+        create Elastic IP-->
+        create NAT gatway
+step 3:  go to the route table
+        Go inside the private table--> edit routes and add route--->add ip 0.0.0.0/0 --> target -->NAT gatway
+        saved
+after that inside private vm cmd reply from internet comes
+
+
+            
