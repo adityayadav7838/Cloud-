@@ -1,0 +1,23 @@
+How to capuitre images in Vm
+
+    ----->  after create Virtual machine
+            * inside Vm windows create a New folder inside folder create -->text document and one more folder
+     
+Step 2:      Go to the vm dashboard in overview section click caputre icon
+
+step 3: create image
+       + give name to image
+       + choose the resource group
+       + click validating and cretae 
+
+Note :-- while creating image The virtual machine get stopped that time only focus to create image after that vm will run
+
+after create capture image from where we can see our image is create or not
+
+    Go to the all services optons and click images
+
+------------
+Now we delete the old vm where inside we create the folder
+we can crete new Vm with using capture image 
+while create vm just choose tyhe image that was early created
+the after create vm check inside the new Vm our old file is existed or not...
