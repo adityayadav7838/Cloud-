@@ -1,0 +1,11 @@
+Step 1 : Create VM 
+        Inside Virtual machine
+        GO to the disk setting 
+        add disk with choosing options
+Step 2: 
+        RDP--> sever manager  --> files and services
+        create disk
+        name-->extra 
+        resource group--> rg same as per given before in vm
+        choose the ssd typpe -->premium, standerd, hdd
+        choose size then create
