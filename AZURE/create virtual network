@@ -1,0 +1,17 @@
+click All services---> virtal network-->add
+    fill name-vnet1
+    address space-->10.0.0.0/8 
+    subscription
+
+Resource group --> create new rg-vnet
+    location --> same for all
+    subnet range--> myvnet-subnet
+    address range-->10.0.0.0/16 
+
+  DDoS protection--> basic (default)
+  servivce endpoint-->disabled
+  firewall-->disabled
+  create
+
+
+  
