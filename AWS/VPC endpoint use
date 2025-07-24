@@ -1,0 +1,65 @@
+VPC endpoint uses instead of using NAT gatway because it is less costly and NAT Gatway is very costly...
+
+  purpose of VPC endpoint---> without going to internet can access access private network 
+                              VPC endpoint is free
+                              VPC endpoint is a virtal device
+                              Steps
+                              Endpoint is specific-->
+                              VPC endpoint is attached with private subnet
+                            
+same purpose ek instance me se dusra instance access krte hai
+    LAB------------
+
+Steps to attcah endpoint
+          Step 1:   create VPC 
+          inside vpc create 2 subnet 
+                  * public subnet   
+              
+                  * private subnet (change the cidr )  -->
+
+step 2: create internet gatway for both 
+        igw-vpc1---->attacth with public subnet
+        igw-vpc2---->attach with private subnet
+
+step 3: create 2 route table
+        public-route----->edit and connect public subnet--------->edit routes and provide igw  through this it go to the internet
+        private-route---->edit and connect private subnet-------->
+
+
+step 4: create 2 New Linux instance with using Custom VPC attach which I have created
+        Note:  
+              for attach private subnet EC2 do ---Disable--- Auto assign public IP (becasue ye internet pe nhi jaa skta)
+              for attach public subnet EC2 do ---Enable--- Auto assign public IP 
+                                                          
+
+        Configure security group --> if windows instance use rdp, https, http --> source anywhere   for  inbound
+        create a new key pay and downlaod 
+        (we can use existing if one is created)
+
+        * public server access krna hai putty ke through uske through private ke trough
+
+Step 5: go to the Vpc dasboard
+        click vpc endpoint
+        click endpoint ----->create endpoint
+                              search gateway--->s3-gatway
+                              select 
+                              choose custom VPC
+                              choose subnet--->private subnet---->createendpoint
+                              copy public instance ip-->on notepad
+                              copy private instance ip-->on notepad
+step 6: open putty gen
+        choose insantace key
+        save private key
+        give name and save
+open putty
+give key 
+connection-->auth-->credential--->give browse new saved key 
+opened putty
+write a command ---on linux-----> 
+                                login as ec2-user
+                                abc.pem
+
+                                
+                                
+        
+
