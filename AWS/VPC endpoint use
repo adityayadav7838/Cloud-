@@ -58,6 +58,40 @@ opened putty
 write a command ---on linux-----> 
                                 login as ec2-user
                                 abc.pem
+                                sudo su-
+                                vi abc.pem
+                                chmod 700 abc.pem
+                                minimize the cmd
+                                ssh -i abc.pem ec2-user@(copy that private IP server key and enter here)
+                                go to the folder and that new key open with --notepad-->copy that key and pste in putty cmd
+                                click escape and (wq) 
+
+
+Now I have to access aws with vpc endpoint 
+sudo su-
+aws configure
+now I have to give my access Id
+                 * GO TO the aws account -->security credential---> ceate access key --> download that excel file 
+                  and copy that open putty and paste it
+                 * Now it ask for secret id Then I have to paste that excel file key 2nd 
+                  enter
+                  enter
+                 * you are in your account
+                  write cmd--aws s3 ls--> it gives nothing coz we don't have s3 bucket we have to create 
+                 * go to the aws account -->inside s3 create a s3 bucket and 
+                                          create --->cmd-->aws s3 mb://aditya342-->enter           (mb=make bucket)
+                                          created
+                  then check with write same cmd --> aws s3 ls
+                  inside bucket I have to upload something-->click upload and choose from local storage and upload with pulic restriction
+                  cmd-->aditya342-->enter
+                  now check in cmd--> aws s3 ls-->that file shows in cmd
+                  aws s3 remove s3 bucket aditya342
+                  
+                  
+                  
+                  
+                               
+                                
 
                                 
                                 
