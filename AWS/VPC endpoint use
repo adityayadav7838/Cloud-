@@ -75,8 +75,8 @@ now I have to give my access Id
                   and copy that open putty and paste it
                  * Now it ask for secret id Then I have to paste that excel file key 2nd 
                   enter
-                  enter
-                 * you are in your account
+                  enter 
+                 * you are in your account 
                   write cmd--aws s3 ls--> it gives nothing coz we don't have s3 bucket we have to create 
                  * go to the aws account -->inside s3 create a s3 bucket and 
                                           create --->cmd-->aws s3 mb://aditya342-->enter           (mb=make bucket)
@@ -85,7 +85,8 @@ now I have to give my access Id
                   inside bucket I have to upload something-->click upload and choose from local storage and upload with pulic restriction
                   cmd-->aditya342-->enter
                   now check in cmd--> aws s3 ls-->that file shows in cmd
-                  aws s3 remove s3 bucket aditya342
+                  aws s3 remove s3 bucket aditya342 
+                  mention to the s3 bucket to relieve the attach s3
                   
                   
                   
