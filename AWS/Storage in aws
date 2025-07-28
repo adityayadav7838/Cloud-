@@ -11,7 +11,11 @@ Types of AWS Storage & Their Use Cases:
             Durability: 99.999999999% (11 9s)
             Scalability: Virtually unlimited
             versionaing: it can do enable but not to do disbale(ou can do suspend but not disbale)
-            
+           
+s3--> 6 types of s3
+       standerd--->s3 intelligent tiering-->s3 one zone IA---> s3 glacier
+                  data retriving chargers apply everywhere
+   
 Use Cases:
             Store and serve static website files (HTML, CSS, JS)
             Backup and restore
@@ -116,24 +120,12 @@ Backup and archiving from on-prem to cloud
 Disaster recovery extension
 
 8. Amazon DataSync
-Transfers data between on-prem and AWS quickly and securely
-
-Use Cases:
-
-One-time or recurring data migrations
-
-Automated data transfers
-
-Backup/replication to cloud
-
-🔁 Summary Comparison Table:
-Service	Type	Access Style	Key Use Cases
-S3	Object	HTTP API	Static websites, backups, big data
-EBS	Block	EC2 Mount	OS, DBs, transactional workloads
-EFS	File (NFS)	Shared Mount	Shared apps, CMS, scalable apps
-FSx	File	Windows/Linux	HPC, Windows apps
-Glacier	Archive	API	Long-term backup, compliance
-AWS Backup	Backup service	GUI/API	Centralized backup
-Storage Gateway	Hybrid	SMB/NFS/iSCSI	On-prem to cloud bridge
-DataSync	Data Transfer	Scheduled/API	On-prem migration
-
+      Transfers data between on-prem and AWS quickly and securely
+      
+      Use Cases:
+      
+      One-time or recurring data migrations
+      
+      Automated data transfers
+      
+      Backup/replication to cloud
