@@ -1,0 +1,39 @@
+STEP 1: Create an S3 Bucket
+        * Click "Create bucket".  
+        * Enter a unique bucket name (e.g., my-demo-bucket-aditya).        
+        * Choose your preferred AWS Region (e.g., Asia Pacific (Mumbai)).        
+        * Leave other settings default for now (block public access should remain ON).
+        * Click "Create bucket".      
+        ~ Bucket created successfully!
+
+STEP 2: Enable Versioning on the Bucket
+        * Go to the S3 Dashboard and click on your bucket.        
+        * Click the "Properties" tab.        
+        * Scroll down to "Bucket Versioning".        
+        * Click Edit → Select Enable → Click Save changes.        
+        ~ Versioning is now enabled!
+        
+STEP 3: Upload a .txt File
+        * Click the "Objects" tab in your bucket.
+        * Click Upload → Add files.        
+        * Choose a .txt file from your computer (e.g., test.txt).
+        * Click Upload.
+        ~File uploaded!
+
+
+STEP 4: Upload Another Version of the Same File
+        * Again click Upload → Add files.
+        * Choose the same file (test.txt) but modify it first (change its content).
+        * Upload it again with the same name (test.txt).
+        ~ Now S3 has multiple versions of test.txt!
+
+STEP 5: View File Versions
+        * In your bucket, click "Objects" tab.        
+        * Click "Show versions" (top-right toggle).        
+        * You’ll see different versions of test.txt listed with Version IDs.
+
+@Bonus Tips:
+You can download old versions or restore deleted files using version IDs.
+
+To delete a file, S3 just adds a "delete marker", it doesn't erase the actual version (because of versioning).
+
