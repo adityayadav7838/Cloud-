@@ -1,0 +1,30 @@
+Bucket versioning 
+    ~ it provide delete protetion --> if I deleted the data the data saved in like in trash bin and it can be restore
+    ~ versioning can be also be used for data retention(protect) and archive
+    ~ once you enable versioning on a bucket it cannot be disabled but you can only suspend the versioning
+    ~ when enbaled bucket versioning will protect thier existing and new object and  maintained their  version as they get updateed
+    ~ updated boject refer PUT,POST, COPY, DELETE
+
+    ~ or ek baar aapne suspend kr diya to fir versions nhi bangege
+    ~ 
+
+
+S3 versioning MFA delete
+    ~ MFA delete is a versioning capacity that add another level of security in case your account is compromised--> (if your account get hacked or something)
+    following permission
+        ~ changing your bucket versioning state
+        ~ permanently delted a object version
+        ~ 
+
+
+S3 multipart upload--
+      
+      ~ it used to upload an object into parts
+      ~ part are uploaded independently parallel in any order
+      ~ it recommednded the size of object 100mb and larger
+      ~ you must use it for object larger then size 5GB
+      ~ signle atomic use if the oject size less then 5GB and multipart use if the ojwct size is more then 5GB 
+      ~ you can move data from one s3 to glacier and delete save cost 
+      
+      
+
