@@ -1,0 +1,139 @@
+ What is AWS Storage?
+AWS offers scalable, durable, and secure storage services for a wide range of data types and use cases—from file storage to object storage, block storage, backups, and data archiving.
+
+Types of AWS Storage & Their Use Cases:
+1. Amazon S3 (Simple Storage Service) – Object Storage
+            Type: Object storage-->it store data as it is form
+                                    we cannot install data in s3
+                                    s3 bucket is a region specific
+            
+            Access: HTTP-based via REST API
+            Durability: 99.999999999% (11 9s)
+            Scalability: Virtually unlimited
+            versionaing: it can do enable but not to do disbale(ou can do suspend but not disbale)
+            
+Use Cases:
+            Store and serve static website files (HTML, CSS, JS)
+            Backup and restore
+            Application assets (images, videos)-->it is kind of folder bucket is a flat architecture it is not heirarchical
+            Data lake (big data analytics)
+            Software install packages
+Rules of S3--
+            bucket names is globaly unique
+            bucket name are the part of url
+            each number start with alphabet and end with alphabet
+
+2. Amazon EBS (Elastic Block Store) – Block Storage
+            Type: Block storage
+            
+            Attached To: EC2 instances
+            Access: Like a local disk (mountable)
+           
+            Use Cases:
+            
+            Operating systems for EC2 instances
+            Databases (MySQL, Oracle, etc.)
+            Enterprise applications
+            File systems
+
+
+3. Amazon EFS (Elastic File System) – File Storage
+            Type: Network file system (NFS-based)
+
+            Access: Multiple EC2 instances can access it simultaneously
+            Scaling: Automatically scales as you add/remove files
+
+            Use Cases:
+            
+            Shared file storage for applications           
+            Web serving & content management           
+            Lift-and-shift enterprise apps  
+            Big data workloads
+
+
+4. Amazon FSx – Managed Windows & Lustre File Systems
+
+a. FSx for Windows File Server
+            SMB protocol
+
+            Supports Windows-based applications
+
+            Use Cases:
+            Windows-based applications needing shared file storage
+
+b. FSx for Lustre
+          High performance, low latency
+          
+          Integrated with S3
+
+Use Cases:
+
+          Machine learning
+          
+          High-performance computing (HPC)
+          
+          Media rendering
+
+5. AWS Backup
+Centralized backup service for AWS services
+
+Automates backups across EC2, RDS, DynamoDB, EFS, etc.
+
+Use Cases:
+
+Backup compliance
+
+Disaster recovery
+
+Centralized backup management
+
+6. Amazon S3 Glacier & Glacier Deep Archive – Cold Storage
+Type: Long-term archival storage
+        it is cheaper
+Glacier: Retrieval in minutes to hours
+
+Glacier Deep Archive: Lowest cost, retrieval in hours
+
+Use Cases:
+
+Compliance data storage (legal, healthcare)
+
+Long-term backups
+
+Archiving infrequently accessed data
+
+7. AWS Storage Gateway
+Connects on-premises systems to AWS cloud storage
+
+Offers file, volume, and tape-based gateways
+
+Use Cases:
+
+Hybrid cloud storage
+
+Backup and archiving from on-prem to cloud
+
+Disaster recovery extension
+
+8. Amazon DataSync
+Transfers data between on-prem and AWS quickly and securely
+
+Use Cases:
+
+One-time or recurring data migrations
+
+Automated data transfers
+
+Backup/replication to cloud
+
+🔁 Summary Comparison Table:
+Service	Type	Access Style	Key Use Cases
+S3	Object	HTTP API	Static websites, backups, big data
+EBS	Block	EC2 Mount	OS, DBs, transactional workloads
+EFS	File (NFS)	Shared Mount	Shared apps, CMS, scalable apps
+FSx	File	Windows/Linux	HPC, Windows apps
+Glacier	Archive	API	Long-term backup, compliance
+AWS Backup	Backup service	GUI/API	Centralized backup
+Storage Gateway	Hybrid	SMB/NFS/iSCSI	On-prem to cloud bridge
+DataSync	Data Transfer	Scheduled/API	On-prem migration
+
