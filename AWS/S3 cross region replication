@@ -1,0 +1,87 @@
+Cross region replication means if you have two regions and you have upload something 
+    * new data to one region then in your another region automatically upload that updated data
+    * so it helps minimize latency
+
+Soruce me kuch repli cate kiya to destination me add hoga 
+but agar destinationn me kuch replicate kiya to source me add Nahi hoga 
+
+
+What is Cross-Region Replication (CRR)?
+Cross-Region Replication (CRR) is an Amazon S3 feature that automatically replicates objects from one bucket (source) in one AWS region to another bucket (destination) in a different region.
+
+🔹 Key Points:
+        Requires versioning enabled on both buckets.        
+        Replication is asynchronous.     
+        Useful for disaster recovery, compliance, low-latency access, or backup.
+
+Can replicate entire bucket or specific prefixes/tags.
+
+Step-by-Step Guide to Set Up CRR (Cross-Region Replication)
+
+Step 1: Create Two S3 Buckets in Different Regions
+          Source Bucket:
+          Go to S3 Dashboard → Create bucket
+          
+          Name: my-source-bucket-aditya
+          
+          Region: Asia Pacific (Mumbai)
+          
+          Enable Versioning
+          
+          Create the bucket
+
+Destination Bucket:
+          Create another bucket
+          
+          Name: my-destination-bucket-aditya
+          
+          Region: US East (N. Virginia) (or any other)
+          
+          Enable Versioning
+          
+          Create the bucket
+
+Step 2: Create an IAM Role for Replication (Optional if auto-generated)
+          When creating replication rules, AWS can create the role automatically. But if you want to create manually:
+          
+          Go to IAM > Roles → Create role
+          
+          Choose S3 as service
+          
+          Attach the AmazonS3FullAccess policy (or a custom one)
+          
+          Name the role: s3-replication-role
+
+Step 3: Enable Cross-Region Replication
+        Go to the source bucket
+        
+        Click on Management tab → Replication rules → Create replication rule
+
+
+Step 4: Configure the Replication Rule
+          Name the rule (e.g., replicate-to-us-east)
+          
+          Status: Enabled
+          
+          Choose Scope: Entire bucket (or filter by prefix/tag)
+          
+          Destination:
+          
+          Choose destination bucket: my-destination-bucket-aditya
+          
+          Choose destination region: US East (N. Virginia)
+          
+          IAM Role:
+          
+          Let AWS create the role automatically (recommended) or select your existing replication role
+          
+          Click Save/Submit
+          
+          CRR is now active!
+
+Step 5: Test the Replication
+          Upload a file (e.g., notes.txt) to source bucket
+          
+          After a few moments, check the destination bucket in the other region
+
+@You should see the replicated file!
