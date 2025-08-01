@@ -30,34 +30,29 @@ You charged for -- transfer data To s3 from your EBS volume you are taking snaps
 
 
 HANDS-ON LAB: Create & Restore EBS Snapshot (AWS)
-🔧 Prerequisites:
-AWS Account (Free Tier)
 
-1 EC2 Linux instance running
+PART 1: Create EBS Snapshot
 
-Key pair to connect via SSH
-
-✅ PART 1: Create EBS Snapshot
-🟩 Step 1: Launch EC2 (if not already running)
-Go to EC2 > Launch Instance
-
-Choose Amazon Linux 2 (free tier)
-
-t2.micro → next steps → Name: test-snapshot
-
-In Storage section, you’ll see root volume (EBS), keep default (8 GB gp3)
-
-Launch instance
+Step 1: Launch EC2 (if not already running)
+            Go to EC2 > Launch Instance
+            
+            Choose Amazon Linux 2 (free tier)
+            
+            t2.micro → next steps → Name: test-snapshot
+            
+            In Storage section, you’ll see root volume (EBS), keep default (8 GB gp3)
+            
+            Launch instance
 
  Step 2: Connect to EC2 and Write Some Data
-Connect via SSH:
-            ssh -i your-key.pem ec2-user@<Public-IP>
-
-Create a test file:
-
-            echo "Hello from snapshot lab!" | sudo tee /data.txt
-
-
+            Connect via SSH:
+                        ssh -i your-key.pem ec2-user@<Public-IP>
+            
+            Create a test file:
+            
+                        echo "Hello from snapshot lab!" | sudo tee /data.txt
+            
+            
 Step 3: Create Snapshot
             Go to EC2 > Volumes
             
@@ -69,7 +64,7 @@ Step 3: Create Snapshot
             
             Click Create Snapshot
 
-🕒 Wait a few seconds → check under Snapshots
+~  Wait a few seconds → check under Snapshots
 
 PART 2: Restore Volume from Snapshot
 
