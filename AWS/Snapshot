@@ -29,6 +29,208 @@ You charged for -- transfer data To s3 from your EBS volume you are taking snaps
                     ~ first snapshot is a clone and subsequent snapshot is incremental
 
 
+HANDS-ON LAB: Create & Restore EBS Snapshot (AWS)
+🔧 Prerequisites:
+AWS Account (Free Tier)
+
+1 EC2 Linux instance running
+
+Key pair to connect via SSH
+
+✅ PART 1: Create EBS Snapshot
+🟩 Step 1: Launch EC2 (if not already running)
+Go to EC2 > Launch Instance
+
+Choose Amazon Linux 2 (free tier)
+
+t2.micro → next steps → Name: test-snapshot
+
+In Storage section, you’ll see root volume (EBS), keep default (8 GB gp3)
+
+Launch instance
+
+ Step 2: Connect to EC2 and Write Some Data
+Connect via SSH:
+            ssh -i your-key.pem ec2-user@<Public-IP>
+
+Create a test file:
+
+            echo "Hello from snapshot lab!" | sudo tee /data.txt
+
+
+Step 3: Create Snapshot
+            Go to EC2 > Volumes
+            
+            Find the volume attached to your instance
+            
+            Select it → Actions > Create Snapshot
+            
+            Name: snapshot-test
+            
+            Click Create Snapshot
+
+🕒 Wait a few seconds → check under Snapshots
+
+PART 2: Restore Volume from Snapshot
+
+            Step 1: Create Volume from Snapshot
+            Go to Snapshots
+            
+            Select your snapshot → Actions > Create Volume
+            
+            Choose same Availability Zone as your EC2
+            
+            Click Create Volume
+
+
+Step 2: Attach New Volume to EC2
+            Go to Volumes
+            
+            Select new volume → Actions > Attach Volume
+            
+            Choose EC2 instance
+            
+            Device name: /dev/xvdf → Click Attach
+
+Step 3: Mount and Read Data
+            Back to SSH terminal:
+            
+            bash
+            Copy
+            Edit
+            lsblk     # Check if /dev/xvdf shows
+            Mount the volume:
+
+cmd----->
+            sudo mkdir /mnt/snapshot
+            sudo mount /dev/xvdf /mnt/snapshot
+Read the file:
+
+cmd------>
+            cat /mnt/snapshot/data.txt
+
+You should see: Hello from snapshot lab!
+
+
+PART 3: Clean Up (Important to avoid charges)
+cmd----->
+            # On EC2 terminal
+            sudo umount /mnt/snapshot
+
+# In AWS Console:
+- Detach and delete new volume
+- Delete snapshot
+- Terminate EC2 if no longer needed
+
+
+----------------------------------------------------------------------
+
+same step-by-step for Azure Snapshot Lab 
+
+Let me know — I can guide you to:
+
+PART 1: Create a Snapshot of an Azure VM Disk
+
+Step 1: Go to Your Virtual Machine
+            Open https://portal.azure.com
+            
+            Go to Virtual Machines
+            
+            Select your VM (e.g., ubuntu-vm)
+            
+            Under Settings, click Disks
+            
+            Click the OS disk (e.g., ubuntu-vm_OsDisk_1_xyz)
+            
+            This will open the disk blade.
+
+
+Step 2: Create a Snapshot
+            On the disk page, click Create Snapshot
+            
+            Fill in:
+            
+            Name: snapshot-test
+            
+            Resource Group: (same as VM or new one)
+            
+            Snapshot type: Full (or Incremental for cost-saving)
+            
+            Storage type: Standard HDD (for testing)
+            
+            Click Review + Create → then Create
+            
+            This snapshot is now available under Snapshots in Azure.
+
+PART 2: Restore Snapshot (Create Disk and New VM or Attach to Existing)
+
+            Option 1: Create a New Disk from Snapshot
+                        Go to Snapshots
+                        
+                        Click on your snapshot → Click Create Disk
+                        
+                        Fill in:
+                        
+                        Name: disk-from-snapshot
+                        
+                        Region: Same as original VM
+                        
+                        Size: Same or more than original
+                        
+                        Click Review + Create → then Create
+
+            Option 2: Create a New VM from Snapshot Disk
+                        Go to the newly created disk
+                        
+                        Click Create VM
+                        
+                        Choose:
+                        
+                        Region, VM size, username, and key
+                        
+                        Azure will launch a new VM with the same state as the snapshot.
+                        
+                        Useful for testing without disturbing the original VM.
+
+             
+            Option 3: Attach Snapshot Disk to an Existing VM (as Data Disk)
+                        Go to your VM → Click Disks > Add data disk
+                        
+                        Click Create and attach a new disk
+                        
+                        Under Source type, choose Snapshot
+                        
+                        Select your snapshot
+                        
+                        Click Save
+                        
+                        SSH into the VM and mount it:
+
+cmd----->
+            # View new disk
+            lsblk
+
+            # Format and mount (if needed)
+            sudo mkdir /mnt/snapdisk
+            sudo mount /dev/sdc1 /mnt/snapdisk
+
+            # Read contents (if snapshot had data)
+            ls /mnt/snapdisk
+
+
+Clean Up (Avoid Charges)
+After testing, delete:
+
+Unused Snapshots
+
+Detached Disks
+
+VMs (if only for testing)
+
+Go to Resource Group > Delete Resource Group to delete all at once.
+
+
+
 
 
 
