@@ -1,4 +1,4 @@
-It means just like scrrenshot 
+It means just like we take scrrenshot 
 EBS snapshot is take backup which is already completed or stored 
 
 but not take snapshot which is currently running
@@ -25,8 +25,8 @@ how it works~~~~~
           example: EBS [ A B C ] , Snapshot 1 [ A B `C` ] , Snapshot 2 [ C A B ] (C is edited in sap 1  add c at first in sap 2)
 
 You charged for -- transfer data To s3 from your EBS volume you are taking snapshot
-                    ~ snapshot stored in S3
-                    ~ first snapshot is a clone and subsequent snapshot is incremental
+                    ~ Snapshot stored in S3
+                    ~ First snapshot is a clone and subsequent snapshot is incremental
 
 
 HANDS-ON LAB: Create & Restore EBS Snapshot (AWS)
