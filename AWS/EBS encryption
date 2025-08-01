@@ -1,0 +1,17 @@
+IMP
+    if i have take snapshot of encrypted volume then the snapshot also will be encrypt and if decrypt volume take sap then the sap willl be decrypted
+
+    You can attach encrypted and decryped volume with single instance
+
+    EBS is moving known as data intransit
+
+    There is no Way to convert encrypt to decrypt
+
+
+
+Share EBS snapshot
+
+      you cannot make a snapshot public which is encrypted in aws
+      
+  
+      
