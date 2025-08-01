@@ -1,0 +1,35 @@
+It means just like scrrenshot 
+EBS snapshot is take backup which is already completed or stored 
+
+but not take snapshot which is currently running
+and it can take time when create first snapshot.
+
+aws account 5000 ebs volume can be created
+and total 10000 snapshot can be taken
+
+@ Note
+ebs volune is AZ specific
+snapshot is region specific like az1,az2,az3 
+
+Q: if my ebs have 20gb and snapshot also 20 gb then if i will recreate ebs is it lesser then previous ebs?
+ans: No we have to make Ebs volume SIZE CAN be same or larger then previous size no lesser.
+
+~ if you have to take snapshot of root volume then first you have to stop the runnung instance then take snapshot otherwise it cannot be done
+
+
+Incremental Snapshot---------------------->
+
+how it works~~~~~
+            EBS snapshot are stored incremently
+
+          example: EBS [ A B C ] , Snapshot 1 [ A B `C` ] , Snapshot 2 [ C A B ] (C is edited in sap 1  add c at first in sap 2)
+
+You charged for -- transfer data To s3 from your EBS volume you are taking snapshot
+                    ~ snapshot stored in S3
+                    ~ first snapshot is a clone and subsequent snapshot is incremental
+
+
+
+
+
+
