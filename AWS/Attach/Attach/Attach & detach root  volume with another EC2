@@ -1,0 +1,21 @@
+First of all I have created Ec2 windows and create a file and image and 
+  
+  @Note : while open RDP client I have copy the decrypt password beacuse at the end I have to used only this time decrypt password not another 
+          then stopped the Ec2 and 
+          go to the Volumes and 
+          Select the root volume and Click the Action option
+          Detach the volume
+
+  Volume detached successfully'
+
+          Create new Ec2 server and aftr created 
+          Stopped the new Ec2 server and Detached its root volume
+          then Attached the old server ec2 root volume to new ec2 server
+          and then 
+          start new instance
+          take RDP clinet 
+          in password You have to paste only that password which you have decrypted in first ec2 server opened only then it will run othwerwise give password error
+          now after run new server with old ec2 root volume you see old files and folder which you have created early 
+    
+    thats it....
+    
