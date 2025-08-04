@@ -1,0 +1,61 @@
+Azure VM Image (Equivalent to AMI in AWS)
+An Azure Managed Image or Shared Image is a template that contains the OS, data disks, and pre-installed applications, used to create new VMs with consistent configurations.
+
+What an Azure VM Image Contains:
+          Operating system (Windows/Linux)
+          
+          Configuration (custom software, settings, patches)
+          
+          OS disk + optional data disks
+
+Types of Images in Azure
+          Managed Image : A single-region, account-specific image. Created from a generalized or specialized VM. Good for limited reuse.
+          
+          Shared Image Gallery (SIG) : For distributing images across multiple regions. Supports versioning and scaling VM deployments.
+          
+          Marketplace Images : Prebuilt solutions provided by Microsoft or partners (SQL, Ubuntu, RHEL, etc.).
+
+Use Cases for Each:
+          Managed Image: Internal testing, backup of a specific machine.
+          
+          SIG (Shared Image Gallery): Enterprise-wide reuse, replication across regions.
+          
+          Marketplace: Quick setup of vendor solutions (e.g., WordPress, Jenkins, etc.).
+
+
+Azure Equivalent Steps (Same as AMI)
+ 
+Step 1: Prepare Your VM
+          Create a Windows VM (e.g., VM-server-japan)
+          Attach extra disk if needed
+          Log in via RDP, create sample files/folders for testing
+          Ensure the VM is set up as required
+
+Step 2: Deallocate and Generalize the VM
+          ~ Required to create a generalized image
+
+            Stop (Deallocate) the VM
+            State should be: Stopped (deallocated)
+
+Wait for VM to shut down automatically
+
+Step 3: Create the Image
+            Go to Azure Portal > Virtual Machines
+            Select your stopped VM
+            Click Capture
+            Choose: Name for the Image
+            Resource group
+            Option: “Automatically delete this VM after creating the image” – optional
+            Image Type: Generalized (after Sysprep)
+            Specialized (skip Sysprep)
+            Click Create
+
+Step 4: Use the Image to Launch New VMs
+            Go to Images in Azure
+            Select the image
+            Click Create VM
+            Configure networking, disk, name, etc.
+            Skip admin credentials if using a specialized image
+
+
+Add an Image Defin
