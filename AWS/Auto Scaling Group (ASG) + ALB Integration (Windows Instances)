@@ -1,0 +1,170 @@
+Here’s your detailed theory for today’s task:
+
+1. Auto Scaling Group (ASG) – Theory
+      Definition
+                  An Auto Scaling Group (ASG) in AWS is a service that automatically launches or terminates EC2 instances based on scaling policies to maintain desired capacity and ensure application availability.
+      Key Components of ASG
+                  Launch Template / Launch Configuration
+                  Defines how new EC2 instances will be created:
+                  AMI ID (Windows Server in our case)
+                  Instance type
+                  Security Group
+                  Key Pair
+                  Storage configuration
+    
+@ Minimum, Maximum, Desired Capacity
+                 * Min → Lowest number of instances always running.
+                 * Max → Upper limit to control costs.
+                 * Desired → Number of instances ASG tries to maintain.
+                 * 
+@ Scaling Policies
+                 * Manual Scaling → User sets desired capacity manually.
+                 * Dynamic Scaling → Automatically adds/removes instances based on CloudWatch metrics (e.g., CPU > 70% → scale out).
+                 * Scheduled Scaling → Scale at specific times (e.g., more instances during office hours).
+
+@ Health Checks
+                 * EC2 Health Check → Checks if instance is running.
+                 * ELB Health Check → Used when integrated with a Load Balancer — ensures only healthy instances serve traffic.
+
+@ Termination Policies
+                 * Decide which instance to terminate first (e.g., oldest, closest to next billing hour).
+@ Benefits of ASG
+                 * High Availability: Ensures a fixed minimum number of healthy instances.
+                 * Cost Optimization: Scales down when demand is low.
+                 * Fault Tolerance: Automatically replaces unhealthy instances.
+
+
+2. Application Load Balancer (ALB) – Theory
+          Definition
+                 * An Application Load Balancer is an L7 (HTTP/HTTPS) load balancer that distributes incoming application traffic across multiple EC2 instances in one or more AZs.
+
+# Key Features
+                 * Layer 7 (Application Layer)
+                 * Can inspect HTTP headers, URL paths, hostnames.
+                 * Supports path-based & host-based routing.
+@ Target Groups
+
+                 * Collection of registered targets (EC2 instances).
+                 * Health checks are performed at target group level.
+@ Listeners
+                 * Check for incoming connections (e.g., Port 80 or 443).
+                 * Rules forward requests to target groups.
+
+@ Cross-Zone Load Balancing
+                 * Distributes traffic evenly across all instances in all AZs.
+                 * Sticky Sessions
+
+Keeps the same user connected to the same instance during a session.
+
+Benefits of ALB
+                 * Distributes traffic evenly for better performance.
+                 * Supports SSL/TLS termination for security.
+                 * Improved fault tolerance by removing unhealthy instances.
+
+3. ASG + ALB Integration (Windows Instances)
+When integrated:
+                 * ALB’s target group is linked to the ASG → new instances automatically get registered.
+                 * ASG health checks use ALB health checks for better reliability.
+                 * Traffic is automatically spread to new Windows instances when scaling occurs.
+                 * If an instance fails, ASG launches a new one and ALB routes traffic to the healthy ones.
+
+Workflow
+                 * User request → ALB Listener (Port 80)
+                 * ALB applies routing rules → sends to Target Group
+                 * Target Group contains ASG-managed Windows EC2 instances
+                 * ASG adds/removes instances based on scaling policies
+                 * ALB continuously checks health and stops sending traffic to unhealthy ones
+
+4. Real-World Use Case
+Example:
+                 * An E-commerce website running on Windows Server IIS:
+                 * During sales → ASG scales from 2 to 10 instances.
+                 * ALB ensures all users get routed to the least busy healthy instance.
+                 * After sale → ASG scales down to 2 to save cost.
+
+5. Interview-Level Points
+                 * ASG + ALB is a stateless architecture — session data should be stored in external storage (S3, DynamoDB, RDS).
+                 * Use Elastic IP only with bastion hosts; ALB handles traffic distribution for application servers.
+                 * Always spread instances across multiple AZs for HA.
+                 * Prefer target tracking scaling for consistent performance.
+
+
+
+@ Why This is Important in Real World
+        High Availability: If an EC2 fails, ASG launches a new one automatically
+        Scalability: Increases/decreases EC2 count based on CPU/traffic
+        Cost Efficiency: You only pay for what you use
+        Disaster Recovery: Keeps minimum required servers always running
+
+
+Step-by-Step Guide
+Step 1: Create a Launch Template for Windows Server
+        Go to EC2 → Launch Templates → Create launch template
+        Name: windows-web-template
+        AMI: Windows Server 2019 Base
+        Instance Type: t2.micro
+        Security Group:
+        RDP (3389) → Your IP
+        HTTP (80) → 0.0.0.0/0
+        Key Pair: Select your existing one
+        Advanced Details → User Data (automates IIS setup):
+                            powershell cmd  --->put 
+                                                  <powershell>
+                                                  Install-WindowsFeature -name Web-Server -IncludeManagementTools
+                                                  echo "Hello from Auto Scaling Windows Server" > C:\inetpub\wwwroot\index.html
+                                                  </powershell>
+
+ Create Template
+
+Step 2: Create Target Group
+          Type: Instances
+          Protocol: HTTP (80)
+          Health Check Path: /
+          Keep it empty for now (ASG will register instances automatically)
+
+Step 3: Create Application Load Balancer
+        Internet-facing
+        Listener: HTTP (80)
+        2 public subnets (different AZs)
+        Attach the Target Group created above
+
+Step 4: Create Auto Scaling Group
+        Go to EC2 → Auto Scaling Groups → Create
+        Name: windows-web-asg
+        Launch template: Select the one from Step 1
+        VPC: Select your VPC
+        Subnets: Select the same as ALB
+        Attach to Existing Load Balancer Target Group
+        Set Group Size:
+                      Desired capacity: 2
+                      
+                      Minimum: 2
+                      
+                      Maximum: 4
+
+          Scaling Policy:
+          Target tracking policy
+          Metric: Average CPU Utilization
+          Target value: 50%
+
+
+Step 5: Test the Setup
+          Access ALB DNS in browser → Should show IIS page from Auto Scaling instances
+          Stop 1 instance → ASG will create a new one automatically
+          Simulate CPU load (optional) → ASG can scale up
+
+Task
+Create Launch Template with IIS auto-install script
+Create Target Group & ALB
+Create Auto Scaling Group integrated with ALB
+Test self-healing by stopping an instance
+Take screenshots:
+ASG dashboard
+Target Group with healthy instances
+ALB DNS in browser
+
+
+
+
+
+If you do this today, tomorrow we can add HTTPS/SSL with ACM so your ALB is secure like in real-world environments.
