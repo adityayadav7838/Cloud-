@@ -165,7 +165,24 @@ Target Group with healthy instances
 ALB DNS in browser
 
 
-
-
-
-If you do this today, tomorrow we can add HTTPS/SSL with ACM so your ALB is secure like in real-world environments.
+Architecture Diagram ()
+        ┌─────────────────────────────┐
+        │        Client Browser        │
+        └─────────────┬───────────────┘
+                      │
+              Internet / HTTPS
+                      │
+        ┌─────────────▼───────────────┐
+        │   Application Load Balancer │
+        │  (DNS: my-alb-xxxxx.elb...) │
+        └─────────────┬───────────────┘
+      Routes traffic via Target Group
+   ┌──────────────────┼──────────────────┐
+   │                  │                  │
+┌──▼───┐          ┌───▼───┐          ┌───▼───┐
+│WinEC2│          │WinEC2 │          │WinEC2 │  (In multiple AZs)
+└──▲───┘          └───▲───┘          └───▲───┘
+   │                  │                  │
+   └──────────────────┴──────────────────┘
+        Managed by Auto Scaling Group
+         (Launch Template: Windows AMI)
