@@ -2,7 +2,8 @@ Here’s your detailed theory for today’s task:
 
 1. Auto Scaling Group (ASG) – Theory
       Definition
-                  An Auto Scaling Group (ASG) in AWS is a service that automatically launches or terminates EC2 instances based on scaling policies to maintain desired capacity and ensure application availability.
+                  An Auto Scaling Group (ASG) in AWS is a service that automatically launches or terminates EC2 instances based on scaling policies 
+                  to maintain desired capacity and ensure application availability.
       Key Components of ASG
                   Launch Template / Launch Configuration
                   Defines how new EC2 instances will be created:
