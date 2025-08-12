@@ -1,0 +1,103 @@
+----------------------------------------------------------------------
+
+same step-by-step for Azure Snapshot Lab 
+
+PART 1: Create a Snapshot of an Azure VM Disk
+
+Step 1: Go to Your Virtual Machine
+            Open https://portal.azure.com
+            
+            Go to Virtual Machines
+            
+            Select your VM (e.g., ubuntu-vm)
+            
+            Under Settings, click Disks
+            
+            Click the OS disk (e.g., ubuntu-vm_OsDisk_1_xyz)
+            
+            This will open the disk blade.
+
+
+Step 2: Create a Snapshot
+            On the disk page, click Create Snapshot
+            
+            Fill in:
+            
+            Name: snapshot-test
+            
+            Resource Group: (same as VM or new one)
+            
+            Snapshot type: Full (or Incremental for cost-saving)
+            
+            Storage type: Standard HDD (for testing)
+            
+            Click Review + Create → then Create
+            
+            This snapshot is now available under Snapshots in Azure.
+
+PART 2: Restore Snapshot (Create Disk and New VM or Attach to Existing)
+
+            Option 1: Create a New Disk from Snapshot
+                        Go to Snapshots
+                        
+                        Click on your snapshot → Click Create Disk
+                        
+                        Fill in:
+                        
+                        Name: disk-from-snapshot
+                        
+                        Region: Same as original VM
+                        
+                        Size: Same or more than original
+                        
+                        Click Review + Create → then Create
+
+            Option 2: Create a New VM from Snapshot Disk
+                        Go to the newly created disk
+                        
+                        Click Create VM
+                        
+                        Choose:
+                        
+                        Region, VM size, username, and key
+                        
+                        Azure will launch a new VM with the same state as the snapshot.
+                        
+                        Useful for testing without disturbing the original VM.
+
+             
+            Option 3: Attach Snapshot Disk to an Existing VM (as Data Disk)
+                        Go to your VM → Click Disks > Add data disk
+                        
+                        Click Create and attach a new disk
+                        
+                        Under Source type, choose Snapshot
+                        
+                        Select your snapshot
+                        
+                        Click Save
+                        
+                        SSH into the VM and mount it:
+
+cmd----->
+            # View new disk
+            lsblk
+
+            # Format and mount (if needed)
+            sudo mkdir /mnt/snapdisk
+            sudo mount /dev/sdc1 /mnt/snapdisk
+
+            # Read contents (if snapshot had data)
+            ls /mnt/snapdisk
+
+
+Clean Up (Avoid Charges)
+After testing, delete:
+
+Unused Snapshots
+
+Detached Disks
+
+VMs (if only for testing)
+
+Go to Resource Group > Delete Resource Group to delete all at once.
