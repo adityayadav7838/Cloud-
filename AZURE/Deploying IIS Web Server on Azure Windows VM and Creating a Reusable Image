@@ -1,0 +1,138 @@
+Deploying IIS Web Server on Azure Windows VM and Creating a Reusable Image
+________________________________________
+Document Control
+•	Title: Deploying IIS on Windows VM & Creating Image in Azure
+•	Version: 1.0
+•	Author: Aditya Yadav
+•	Date: 18-Aug-2025
+________________________________________
+Objective
+The objective of this SOP is to provision a Windows Virtual Machine (VM) on Microsoft Azure, configure it with IIS (Internet Information Services) web server, and create a reusable custom image from this VM to ensure consistent deployments.
+________________________________________
+Scope
+This SOP is intended for Cloud/DevOps Engineers working on Azure Virtual Machines with Windows OS. It provides a step-by-step guide for:
+•	Provisioning a Windows VM in Azure
+•	Installing IIS Web Server
+•	Verifying web server accessibility
+•	Creating a VM Image (equivalent to AWS AMI)
+•	Deploying another VM from the captured image
+________________________________________
+Prerequisites
+•	Active Azure Subscription
+•	Access to Azure Portal
+•	Permissions to create VM, Storage, and Networking resources
+•	Remote Desktop (RDP) client installed on local system
+________________________________________
+Procedure
+Step 1: Create a Windows Virtual Machine
+1.	Log in to the Azure Portal (https://portal.azure.com).
+2.	Navigate to Virtual Machines → Create → Azure Virtual Machine.
+3.	Select the following:
+o	Resource Group: Create new or use existing
+o	Image: Windows Server 2019/2022 Data-Centre
+o	Size: Standard B1s (for testing)
+o	Username/Password: Set admin credentials
+o	Inbound Ports: Allow 3389 (RDP) and 80 (HTTP)
+4.	Click Review + Create → Create.
+5.	Once deployment completes, go to the VM Overview page.
+________________________________________
+Step 2: Connect to VM
+1.	In Azure Portal, go to the VM → Click Connect → RDP.
+2.	Download the RDP file and connect using the credentials created.
+________________________________________
+Step 3: Install IIS Web Server
+1.	Inside Windows VM → Open Server Manager.
+2.	Click Add Roles and Features → Select Web Server (IIS).
+3.	Complete the installation.
+4.	Verify by opening Internet Explorer/Edge inside the VM and browsing:
+o	http://localhost
+o	You should see the IIS Default Welcome Page.
+________________________________________
+Step 4: Verify IIS from Browser
+1.	Copy the Public IP Address of the VM from Azure Portal.
+2.	Paste into your local system browser:
+o	http:// 4.240.94.79  <Public_IP>
+o	The IIS Default Page should load successfully.
+ 
+________________________________________
+Step 5: Capture Image of VM
+
+1.	Stop the running VM (required for image capture).
+1.	In Azure Portal, stop the VM (deallocate).
+2.	Navigate to the VM → Click Capture.
+3.	Fill details:
+o	Shared Image Gallery: Select/Create → SIG-IIS.
+o	Image Definition Name: WinIIS-Image.
+o	Publisher: YourCompany
+o	Offer: WinIIS
+o	SKU: IIS-Web
+o	OS State: Generalized.
+o	Select Automatically delete this VM after capture (if not needed).
+	Image Versioning (Important Section)
+When creating the image version, fill the details as:
+
+o	Version number: 1.0.0
+o	Exclude from latest: ❌ (Unchecked)
+o	End of life date: (leave blank for now)
+o	Block deletion before End of life: (ignore, not applicable)
+o	Lock deleting Replicated Locations: ❌ (Unchecked)
+o	Shallow replication: ❌ (Unchecked → use default deep replication)
+ 
+
+This ensures the captured image is available as the latest version for new VM deployments.
+
+	Version Control
+•	First image: 1.0.0
+•	If IIS configuration changes: increment to 1.0.1.
+•	If new software added: increment to 1.1.0.
+•	Major rebuild: increment to 2.0.0.
+
+	Note
+•	Always deallocate VM before capturing image.
+•	Do not set End of Life unless you know when this image should expire.
+•	Avoid using Shallow Replication unless testing.
+________________________________________
+
+________________________________________
+Step 6: Deploy Another VM from Image
+1.	Navigate to Azure Portal → Images → Select Win-IIS-Base-Image.
+2.	Click + Create VM.
+3.	Follow the wizard → Configure username, password, and network.
+4.	Deploy the VM.
+
+	Deploy New VM from Custom Image
+1.	Navigate to Shared Image Gallery → Select WinIIS-Image.
+2.	Choose + Create VM.
+3.	Configure:
+o	VM Name: WinVM-IIS-FromImage.
+o	Size, Authentication, Networking as required.
+4.	Deploy → Start VM.
+5.	Connect via RDP → Open browser → http://localhost or use Public IP.
+6.	Verify IIS is running (your custom webpage should display).
+
+________________________________________
+Step 7: Validate IIS on New VM
+1.	Once deployed, copy the Public IP of the new VM.
+2.	Open it in browser: http://20.83.163.186<New_VM_Public_IP>. 
+3.	IIS Default Page should be displayed, confirming IIS is pre-configured.
+
+ 
+	Validation
+•	New VM deployed from the image should have IIS pre-installed.
+•	IIS default page or custom HTML should load successfully.
+
+________________________________________
+Expected Outcome
+•	A Windows VM with IIS Web Server is deployed successfully.
+•	A reusable Azure Image (equivalent to AWS AMI) is created.
+•	Any VM launched from this image has IIS pre-installed and ready to use.
+________________________________________
+Rollback/Recovery Plan
+•	If IIS fails to load, check:
+o	NSG inbound rules (allow port 80).
+o	IIS service status inside VM (services. MSc).
+•	If VM deployment fails, verify quota/region availability.
+________________________________________
+
+
+
