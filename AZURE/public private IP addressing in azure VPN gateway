@@ -1,0 +1,197 @@
+public & private IP addressing in Azure Deploy Azure VPN Gateway
+
+Part A — Theory 
+
+1) Public vs Private IP in Azure
+•	Private IP: lives inside a VNet/subnet (RFC1918). Used for VM-to-VM and internal traffic.
+o	Assignment: Dynamic (default) or Static (pin it) on the NIC’s IP configuration.
+o	Scope: VNet only (reachable over peering/VPN).
+•	Public IP (PIP): routable from the Internet; attaches to a NIC, Load Balancer, App Gateway, VPN Gateway, etc.
+o	SKU: Standard (secure by default; closed until you allow via NSG) vs Basic (legacy).
+o	Allocation: Static (IP won’t change) or Dynamic (may change).
+•	Common patterns
+o	Prod VMs: no public IP, reached via Bastion / VPN / LB.
+o	Internet-facing apps: PIP on Load Balancer / App Gateway, not on the VM.
+•	Name resolution: optional DNS label on PIP → myapp.region.cloudapp.azure.com.
+
+2) Where NSGs fit
+•	NSG = stateful firewall at subnet and/or NIC.
+•	Rules: priority (100–4096), source/destination, port, protocol, service tags (e.g., Internet, Virtual Network, AzureLoadBalancer).
+•	Defaults: allow intra-VNet, deny all inbound from Internet. Your lower-number (higher priority) rules override.
+
+3) VPN Gateway (what & why)
+•	Managed VPN appliance Microsoft runs for you.
+•	Lets your PC (Point-to-Site) or on-premises network (Site-to-Site) reach your VNet’s private IPs.
+•	Route-based (modern, needed for most scenarios).
+•	Works with IKEv2 and OpenVPN (TLS).
+•	You’ll do Point-to-Site (P2S) today (your Windows laptop ↔ VNet).
+________________________________________
+
+
+
+
+
+
+
+
+
+
+
+Part B — Hands-on Lab 1: Public & Private IPs (quick)
+Goal
+See how PIPs and private IPs behave, and how NSGs control access.
+Steps
+1.	Resource Group
+•	Create rg-ip-lab in your preferred region.
+2.	VNet + Subnet
+•	VNet: vnet-ip-lab = 10.20.0.0/16
+•	Subnet: snet-app = 10.20.1.0/24
+3.	Windows VM
+•	VM: vm-web-01 (Windows Server 2019/2022) in snet-app.
+•	Public IP: enable (Static).
+•	NSG inbound:
+o	Allow RDP 3389 from Your IP
+o	Allow HTTP 80 from Internet (optional if you install IIS)
+4.	Validate
+•	RDP to PIP → works because NSG allows it.
+•	(Optional) Install IIS and browse http://<public IP>.
+ 
+
+5.	Switch to private-only (just to see the difference)
+•	Disassociate the VM’s public IP (or disable).
+•	Try RDP again from your PC → fails (no Internet path).
+ 
+
+•	Keep this VM; you’ll reach it later via VPN Gateway.
+________________________________________
+
+Part C — Hands-on Lab 2: Point-to-Site VPN Gateway (Windows laptop ↔ VNet)
+
+What you’ll build
+Your Windows PC connects via Azure VPN to the VNet; then you’ll RDP to vm-web-01 using its private IP.
+Tip: VPN Gateway creation is a managed deployment; just configure and let Azure build it.
+
+Step 1 — Prepare the VNet for a gateway
+1.	GatewaySubnet (required name)
+•	In vnet-ip-lab, add subnet GatewaySubnet with address 10.20.255.0/27 (or any free /27).
+The name must be GatewaySubnet.
+
+Step 2 — Public IP for the gateway
+•	Create PIP: pip-vpngw (SKU Standard, Static).
+
+Step 3 — Create the VPN Gateway
+•	Create Virtual network gateway:
+o	Name:  vpngw-ip-lab
+o	Region: same as VNet
+o	Gateway type: VPN
+o	VPN type: Route-based
+o	SKU: VpnGw1 (good for lab)
+o	Virtual network: vnet-ip-lab
+o	GatewaySubnet: select the one you made
+o	Public IP: pip-vpngw
+•	Create (Azure provisions it for you in the background).
+•	While doing this I made mistake to make subnet for this 
+•	Coz Azure is case sensitive 
+
+
+✅ Fix Steps
+1.	Go to your Virtual Network → vnet-ip-lab.
+2.	Under Subnets, click + Subnet.
+3.	Enter the Name exactly as GatewaySubnet (Azure is case-sensitive for this).
+4.	Assign a subnet range (example: 10.0.255.0/27 if your VNet is 10.0.0.0/16).
+o	It must not overlap with other subnets.
+o	Keep it small (at least /27).
+5.	Save.
+6.	Now redeploy your Virtual Network Gateway (vpngw-ip-lab) and select:
+o	Virtual network = vnet-ip-lab
+o	Subnet = GatewaySubnet
+o	Public IP = pip-vpngw (or the new one you created)
+
+•	Quick Check: Did you maybe name your subnet Gateway-subnet or gw-subnet instead of GatewaySubnet? That’s a very common mistake.
+
+Step 4 — Configure Point-to-Site (P2S) on the gateway
+ 
+1.	Open the gateway → Point-to-site configuration → Configure now.
+2.	Address pool for VPN clients: 172.16.0.0/24 (must NOT overlap with your home LAN or VNet).
+3.	Tunnel type: OpenVPN and IKEv2 (both).
+ 
+4.	Authentication: Choose Azure certificate (simple for labs).
+Generate certificates on your Windows PC (PowerShell)
+This creates a root cert (uploaded to Azure) and a client cert (installed on your PC).
+
+Open PowerShell (Run as Administrator) on your laptop and run:
+# 1) Create Root Certificate
+$rootCert = New-SelfSignedCertificate `
+  -Type Custom -KeySpec Signature `
+  -Subject "CN=AdityaP2SRootCert" `
+  -KeyExportPolicy Exportable `
+  -HashAlgorithm sha256 -KeyLength 2048 `
+  -CertStoreLocation "Cert:\CurrentUser\My" `
+  -KeyUsageProperty Sign -KeyUsage CertSign
+
+# Export the root cert (CER, public only) to upload to Azure
+Export-Certificate -Cert $rootCert -FilePath "$env:USERPROFILE\Desktop\P2SRootCert.cer"
+
+# 2) Create a Client Certificate signed by the root
+$clientCert = New-SelfSignedCertificate `
+  -Type Custom -KeySpec Signature `
+  -Subject "CN=AdityaP2SClientCert" `
+  -KeyExportPolicy Exportable `
+  -HashAlgorithm sha256 -KeyLength 2048 `
+  -CertStoreLocation "Cert:\CurrentUser\My" `
+  -Signer $rootCert `
+  -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.2")  # Client Authentication
+
+5.	Upload root cert to Azure
+•	In the P2S config → Upload the file P2SRootCert.cer.
+•	Give it a friendly name, e.g., RootCert-Aditya.
+6.	Install the client cert on your PC
+•	Export the client cert as PFX (with password), then import to Current User store:
+# Export client cert as PFX (you’ll be prompted for a password)
+Export-PfxCertificate -Cert $clientCert `
+  -FilePath "$env:USERPROFILE\Desktop\P2SClientCert.pfx" `
+  -Password (Read-Host -AsSecureString "Enter PFX password")
+ 
+•	Double-click the .pfx, import to Current User (Personal store). Remember the password you set.
+7.	Save P2S configuration on the gateway.
+
+If It Doesn’t create then make sure you have extra space to create public IP
+Step 5 — Install Azure VPN Client & add the profile
+1.	Install Azure VPN Client from Microsoft Store.
+2.	On the gateway → Point-to-site configuration → Download VPN client (OpenVPN format).
+3.	Open Azure VPN Client → Import the downloaded profile (it’s a zip; pick the xml/ovpn inside).
+4.	Click Connect in Azure VPN Client.
+ 
+Step 6 — RDP to your VM over private IP
+1.	Get vm-web-01 private IP (e.g., 10.20.1.4).
+2.	Ensure VM’s NSG allows RDP 3389 from Virtual Network (not only “My IP”).
+o	Inbound rule example:
+	Priority 100, Source Virtual Network, Dest Any, Port 3389, Protocol TCP, Action Allow.
+o	 
+3.	Use Remote Desktop to 10.20.1.4.
+o	You should connect successfully without any public IP on the VM.
+ It’s a Private IP of VM
+________________________________________
+Validation Checklist
+•	Azure VPN Client shows Connected to vpngw-ip-lab.
+•	vm-web-01 has no public IP (or it’s disabled).
+•	NSG inbound allows RDP from VirtualNetwork.
+•	RDP to private IP works.
+________________________________________
+Troubleshooting (fast)
+•	VPN connects but RDP fails
+o	NSG not allowing 3389 from VirtualNetwork? Fix rule.
+o	Windows Defender Firewall blocking RDP? Ensure Remote Desktop inbound rules enabled.
+o	Wrong private IP? Confirm in VM → Networking.
+•	VPN won’t connect
+o	Did you import the profile downloaded from the gateway?
+o	Root .cer uploaded to gateway and client PFX installed on your PC?
+o	P2S address pool (172.16.0.0/24) must not overlap with your home Wi-Fi subnet or the VNet.
+•	Name resolution
+o	Use IP for RDP unless you configured custom DNS.
+________________________________________
+Stretch Lab (optional): VNet-to-VNet “S2S style” in Azure
+•	Build a second VNet (10.30.0.0/16) + second VPN Gateway.
+•	Create VNet-to-VNet connection between the two gateways.
+•	Prove vm-web-01 can reach a VM in VNet2 over private IPs only.
+
